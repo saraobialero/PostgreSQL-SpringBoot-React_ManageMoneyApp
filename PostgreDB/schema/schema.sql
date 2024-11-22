@@ -107,7 +107,7 @@ CREATE TABLE RecurringTransactions (
     notes TEXT
 );
 
--- [Nuova tabella per la relazione many-to-many]
+
 CREATE TABLE AccountRecurringTransactions (
     IDAccountRecurring SERIAL PRIMARY KEY,
     FKAccount INTEGER REFERENCES Accounts(IDAccounts),
@@ -116,7 +116,7 @@ CREATE TABLE AccountRecurringTransactions (
     UNIQUE(FKAccount, FKRecurring, transaction_role)
 );
 
--- [Indici aggiornati]
+
 CREATE INDEX idx_expenses_account ON Expenses(FKAccount);
 CREATE INDEX idx_expenses_label ON Expenses(FKLabel);
 CREATE INDEX idx_incomes_account ON Incomes(FKAccount);

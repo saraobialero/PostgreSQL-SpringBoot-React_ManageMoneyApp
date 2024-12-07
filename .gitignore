@@ -1,3 +1,27 @@
 # Database configuration
 PostgreDB/schema/init.sql
 
+# IDEs and Editors
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+#Springboot
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+application-local.yml
+application-dev.yml
+

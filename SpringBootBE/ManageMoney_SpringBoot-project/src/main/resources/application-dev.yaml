@@ -29,10 +29,3 @@ logging:
     org.springframework.web: ${LOG_LEVEL:INFO}
     org.hibernate: ${LOG_LEVEL:INFO}
     com.app.manage_money: ${LOG_LEVEL:DEBUG}
-
-    springdoc:
-      api-docs:
-        path: /api-docs
-      swagger-ui:
-        path: /swagger-ui.html
-        operations-sorter: method

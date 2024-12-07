@@ -1,97 +1,145 @@
--- [Tutti gli ENUM rimangono uguali]
-CREATE TYPE account_type AS ENUM (
-    'CHECKING', 'SAVINGS', 'CREDIT_CARD', 'CASH', 'INVESTMENT'
-);
+-- Drop everything if exists
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO public;
 
-CREATE TYPE account_state AS ENUM (
-    'ACTIVE', 'INACTIVE', 'BLOCKED', 'CLOSED'
+-- Create ENUM types
+CREATE TYPE transaction_type AS ENUM ('INCOME', 'EXPENSE');
+
+CREATE TYPE category_type AS ENUM (
+    'FOOD',
+    'HOME',
+    'WORK',
+    'ENTERTAINMENT',
+    'HEALTH',
+    'HOLIDAY',
+    'SHOPPING',
+    'CAR',
+    'TRANSPORT',
+    'SPORT'
 );
 
 CREATE TYPE label_type AS ENUM (
-    'EXPENSE', 'INCOME', 'TRANSFER', 'INVESTMENT'
+    -- Food
+    'DINNER',
+    'LUNCH',
+    'BREAKFAST',
+    'HAPPY_HOUR',
+    'MARKET_EXPENSES',
+    'OTHER_FOOD',
+
+    -- Home
+    'UTILITY_BILLS',
+    'GROCERY_SHOPPING',
+    'OTHER_HOME',
+
+    -- Work
+    'SALARY',
+    'TAXES',
+    'REFUNDS',
+    'OTHER_WORK',
+
+    -- Entertainment
+    'CINEMA',
+    'ART',
+    'OTHER_ENTERTAINMENT',
+
+    -- Health
+    'HEALTH_APPOINTMENTS',
+    'HEALTH_SHOPPING',
+    'OTHER_HEALTH',
+
+    -- Holiday
+    'FOOD_HOLIDAY',
+    'ACTIVITIES',
+    'ACCOMMODATION',
+    'TRANSPORT_HOLIDAY',
+    'OTHER_HOLIDAY',
+
+    -- Shopping
+    'CLOTHES',
+    'TECH',
+    'BOOKS',
+    'OTHER_SHOPPING',
+
+    -- Car
+    'INSURANCE',
+    'GASOLINE',
+    'MAINTENANCE_CAR',
+    'OTHER_CAR',
+
+    -- Transport
+    'TRAIN',
+    'BUS',
+    'AIRPLANE',
+    'SHIP',
+    'OTHER_TRANSPORT',
+
+    -- Sport
+    'GYM_ACTIVITY',
+    'CYCLE_ACTIVITY',
+    'RUN_ACTIVITY',
+    'SWIM_EQUIPMENT',
+    'CYCLE_EQUIPMENT',
+    'RUN_EQUIPMENT',
+    'HIKE_EQUIPMENT',
+    'WORK_EQUIPMENT',
+    'OTHER_SPORT'
 );
 
-CREATE TYPE label_category AS ENUM (
-    'FOOD', 'TRANSPORT', 'UTILITIES', 'RENT', 'SHOPPING', 'HEALTH',
-    'ENTERTAINMENT', 'SALARY', 'FREELANCE', 'INVESTMENT_RETURN', 'GIFT', 'OTHER'
+CREATE TYPE account_type AS ENUM (
+    'CHECKING',
+    'SAVINGS',
+    'CREDIT_CARD',
+    'CASH',
+    'INVESTMENT'
+);
+
+CREATE TYPE account_state AS ENUM (
+    'ACTIVE',
+    'INACTIVE',
+    'BLOCKED',
+    'CLOSED'
 );
 
 CREATE TYPE frequency_type AS ENUM (
-    'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'
+    'DAILY',
+    'WEEKLY',
+    'MONTHLY',
+    'YEARLY'
 );
 
-CREATE TYPE transaction_type AS ENUM (
-    'INCOME', 'EXPENSE'
-);
-
--- [Labels e Accounts rimangono uguali]
-CREATE TABLE Labels (
-    IDLabel SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type label_type NOT NULL,
-    category label_category NOT NULL,
-    notes TEXT
-);
-
-CREATE TABLE Accounts (
-    IDAccounts SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+-- Create tables
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
     type account_type NOT NULL,
-    state account_state NOT NULL DEFAULT 'ACTIVE',
+    state account_state DEFAULT 'ACTIVE' NOT NULL,
     balance DECIMAL(10,2) DEFAULT 0,
     currency VARCHAR(3) NOT NULL,
     details TEXT
 );
 
--- [Expenses, Incomes, ManageCount e SavingPlans rimangono uguali]
-CREATE TABLE Expenses (
-    IDExpense SERIAL PRIMARY KEY,
-    FKLabel INTEGER REFERENCES Labels(IDLabel),
-    FKAccount INTEGER REFERENCES Accounts(IDAccounts),
-    location VARCHAR(200),
-    is_recurring BOOLEAN DEFAULT FALSE,
-    creation_date DATE DEFAULT CURRENT_DATE,
-    amount DECIMAL(10,2) NOT NULL,
-    currency VARCHAR(3) NOT NULL,
-    beneficiary VARCHAR(100),
-    notes TEXT
+CREATE TABLE category_label_mappings (
+    id SERIAL PRIMARY KEY,
+    category category_type NOT NULL,
+    allowed_label_type label_type NOT NULL,
+    transaction_type transaction_type NOT NULL,
+    UNIQUE(category, allowed_label_type)
 );
 
-CREATE TABLE Incomes (
-    IDIncome SERIAL PRIMARY KEY,
-    FKIncomesLabel INTEGER REFERENCES Labels(IDLabel),
-    FKAccount INTEGER REFERENCES Accounts(IDAccounts),
-    location VARCHAR(200),
-    is_recurring BOOLEAN DEFAULT FALSE,
-    creation_date DATE DEFAULT CURRENT_DATE,
-    amount DECIMAL(10,2) NOT NULL,
-    currency VARCHAR(3) NOT NULL,
-    income_source VARCHAR(100),
-    notes TEXT
+CREATE TABLE labels (
+    id SERIAL PRIMARY KEY,
+    category category_type NOT NULL,
+    label_type label_type NOT NULL,
+    transaction_type transaction_type NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    FOREIGN KEY (category, label_type)
+        REFERENCES category_label_mappings(category, allowed_label_type)
 );
 
-CREATE TABLE ManageCount (
-    IDManageCount SERIAL PRIMARY KEY,
-    FKIncome INTEGER REFERENCES Incomes(IDIncome),
-    FKExpense INTEGER REFERENCES Expenses(IDExpense),
-    budget DECIMAL(10,2),
-    currency VARCHAR(3) NOT NULL,
-    period_start DATE NOT NULL,
-    period_end DATE NOT NULL
-);
-
-CREATE TABLE SavingPlans (
-    IDSavingPlan SERIAL PRIMARY KEY,
-    FKAccount INTEGER REFERENCES Accounts(IDAccounts),
-    currency VARCHAR(3) NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    notes TEXT
-);
-
--- [RecurringTransactions modificata]
-CREATE TABLE RecurringTransactions (
-    IDRecurring SERIAL PRIMARY KEY,
-    FKLabel INTEGER REFERENCES Labels(IDLabel),
+CREATE TABLE recurring_transactions (
+    id SERIAL PRIMARY KEY,
+    label_id INTEGER REFERENCES labels(id),
     type transaction_type NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     currency VARCHAR(3) NOT NULL,
@@ -101,28 +149,52 @@ CREATE TABLE RecurringTransactions (
     next_occurrence DATE NOT NULL,
     description TEXT,
     beneficiary VARCHAR(100),
-    income_source VARCHAR(100),
+    source VARCHAR(100),
     last_processed_date DATE,
-    is_active BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT true,
     notes TEXT
 );
 
-
-CREATE TABLE AccountRecurringTransactions (
-    IDAccountRecurring SERIAL PRIMARY KEY,
-    FKAccount INTEGER REFERENCES Accounts(IDAccounts),
-    FKRecurring INTEGER REFERENCES RecurringTransactions(IDRecurring),
+CREATE TABLE account_recurring_transactions (
+    id SERIAL PRIMARY KEY,
+    account_id INTEGER REFERENCES accounts(id),
+    recurring_id INTEGER REFERENCES recurring_transactions(id),
     transaction_role VARCHAR(20) NOT NULL CHECK (transaction_role IN ('SOURCE', 'DESTINATION')),
-    UNIQUE(FKAccount, FKRecurring, transaction_role)
+    UNIQUE(account_id, recurring_id, transaction_role)
 );
 
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    label_id INTEGER REFERENCES labels(id),
+    account_id INTEGER REFERENCES accounts(id),
+    type transaction_type NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    location VARCHAR(200),
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    beneficiary VARCHAR(100),
+    source VARCHAR(100),
+    is_recurring BOOLEAN DEFAULT false,
+    notes TEXT,
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
 
-CREATE INDEX idx_expenses_account ON Expenses(FKAccount);
-CREATE INDEX idx_expenses_label ON Expenses(FKLabel);
-CREATE INDEX idx_incomes_account ON Incomes(FKAccount);
-CREATE INDEX idx_incomes_label ON Incomes(FKIncomesLabel);
-CREATE INDEX idx_recurring_next_occurrence ON RecurringTransactions(next_occurrence);
-CREATE INDEX idx_expenses_date ON Expenses(creation_date);
-CREATE INDEX idx_incomes_date ON Incomes(creation_date);
-CREATE INDEX idx_account_recurring ON AccountRecurringTransactions(FKAccount);
-CREATE INDEX idx_recurring_label ON RecurringTransactions(FKLabel);
+CREATE TABLE saving_plans (
+    id SERIAL PRIMARY KEY,
+    account_id INTEGER REFERENCES accounts(id),
+    target_amount DECIMAL(10,2) NOT NULL,
+    current_amount DECIMAL(10,2) DEFAULT 0,
+    currency VARCHAR(3) NOT NULL,
+    start_date DATE DEFAULT CURRENT_DATE NOT NULL,
+    target_date DATE,
+    notes TEXT
+);
+
+-- Create indexes
+CREATE INDEX idx_transactions_account ON transactions(account_id);
+CREATE INDEX idx_transactions_label ON transactions(label_id);
+CREATE INDEX idx_transactions_date ON transactions(transaction_date);
+CREATE INDEX idx_recurring_label ON recurring_transactions(label_id);
+CREATE INDEX idx_recurring_next ON recurring_transactions(next_occurrence);
+CREATE INDEX idx_labels_category ON labels(category);
+CREATE INDEX idx_account_recurring ON account_recurring_transactions(recurring_id);

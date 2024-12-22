@@ -3,8 +3,6 @@ package com.app.manage_money.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
-
 @Data
 @Entity
 @Table(name = "account_recurring_transactions")
@@ -19,8 +17,8 @@ public class AccountRecurringTransaction {
     @Column(name = "account_id")
     private Integer accountId;
 
-    @Column(name = "transaction_id")
-    private Integer transactionId;
+    @Column(name = "recurring_id")
+    private Integer recurringId;
 
     //Keep? As enum?
     @Column(name = "transaction_role")

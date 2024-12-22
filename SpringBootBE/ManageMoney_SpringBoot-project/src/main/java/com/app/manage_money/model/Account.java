@@ -17,7 +17,7 @@ public class Account {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
+    @Column(name = "account_type")
     private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +27,5 @@ public class Account {
     @Column(name = "balance")
     private BigDecimal balance;
 
-    @Column(name = "details")
-    private String details;
 
 }

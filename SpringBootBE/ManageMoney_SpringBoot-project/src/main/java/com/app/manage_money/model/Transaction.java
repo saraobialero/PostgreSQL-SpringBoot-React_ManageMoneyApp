@@ -1,6 +1,5 @@
 package com.app.manage_money.model;
 
-import com.app.manage_money.model.enums.Frequency;
 import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,6 +23,9 @@ public class Transaction {
     @Column(name = "account_id")
     private int accountId;
 
+    @Column(name = "name")
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private TransactionType transactionType;
@@ -36,6 +38,9 @@ public class Transaction {
 
     @Column(name = "beneficiary")
     private String beneficiary;
+
+    @Column(name = "source")
+    private String source;
 
     @Column(name = "is_recurring")
     private boolean isRecurring;

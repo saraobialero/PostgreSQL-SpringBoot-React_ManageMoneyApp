@@ -1,14 +1,16 @@
 package com.app.manage_money.model;
 
-import com.app.manage_money.model.enums.*;
+import com.app.manage_money.model.enums.CategoryType;
+import com.app.manage_money.model.enums.LabelType;
+import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 
 
 @Data
 @Entity
-@Table(name = "labels")
-public class Label {
+@Table(name = "category_label_mappings")
+public class CategoryLabelMapping {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,14 +22,11 @@ public class Label {
     private CategoryType categoryType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "label_type")
-    private LabelType labelType;
+    @Column(name = "allowed_label_type")
+    private LabelType allowedLabelType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
     private TransactionType transactionType;
-
-    @Column(name = "is_active")
-    private boolean isActive;
 
 }

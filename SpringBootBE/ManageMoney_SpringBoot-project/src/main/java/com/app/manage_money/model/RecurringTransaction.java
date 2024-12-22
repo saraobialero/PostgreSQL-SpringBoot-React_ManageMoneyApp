@@ -17,14 +17,9 @@ public class RecurringTransaction {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "label_id")
     private int labelId;
 
-    @Column(name = "account_id")
-    private int accountId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -45,7 +40,6 @@ public class RecurringTransaction {
 
     @Column(name = "next_occurrence")
     private LocalDate nextOccurrence;
-
 
     @Column(name = "beneficiary")
     private String beneficiary;

@@ -1,6 +1,5 @@
 package com.app.manage_money.model;
 
-import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 

@@ -42,7 +42,7 @@ DB_NAME=managemoney_dev
 DB_USERNAME=money_manager
 DB_PASSWORD=your_password
 SHOW_SQL=true
-HIBERNATE_DDL=update
+HIBERNATE_DDL=none
 SERVER_PORT=8080
 ```
 

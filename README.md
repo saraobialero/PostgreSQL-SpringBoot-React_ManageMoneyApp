@@ -97,8 +97,8 @@ src/
 
 ### Phase 1: MVP (Minimum Viable Product)
 
-- [ ] Development environment setup
-- [ ] Database schema implementation
+- [x] Development environment setup
+- [x] Database schema implementation
 - [ ] Basic Spring Boot APIs
 - [ ] Essential React UI
 - [ ] Authentication system

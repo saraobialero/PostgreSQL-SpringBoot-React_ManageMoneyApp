@@ -18,7 +18,6 @@ public class Transaction {
     @Column(name = "id")
     private Integer id;
 
-
     @Column(name = "label_id")
     private int labelId;
 
@@ -32,12 +31,8 @@ public class Transaction {
     @Column(name = "location")
     private String location;
 
-    //Change type value on db
     @Column(name = "amount")
     private BigDecimal amount;
-
-    //Remove currency (manage on front-end)
-    //Remove Notes
 
     @Column(name = "beneficiary")
     private String beneficiary;

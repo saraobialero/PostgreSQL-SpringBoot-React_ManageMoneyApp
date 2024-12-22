@@ -17,7 +17,6 @@ public class RecurringTransaction {
     @Column(name = "id")
     private Integer id;
 
-
     @Column(name = "name")
     private String name;
 
@@ -31,31 +30,22 @@ public class RecurringTransaction {
     @Column(name = "type")
     private TransactionType transactionType;
 
-    //Change type value on db
     @Column(name = "amount")
     private BigDecimal amount;
-
-    //Remove currency (manage on front-end)
 
     @Enumerated(EnumType.STRING)
     @Column(name = "frequency")
     private Frequency frequency;
 
-
     @Column(name = "start_date")
     private LocalDate startDate;
-
 
     @Column(name = "end_date")
     private LocalDate endDate;
 
-
     @Column(name = "next_occurrence")
     private LocalDate nextOccurrence;
 
-    //Remove?
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "beneficiary")
     private String beneficiary;
@@ -69,5 +59,4 @@ public class RecurringTransaction {
     @Column(name = "is_active")
     private boolean isActive;
 
-    //REMOVE NOTE
 }

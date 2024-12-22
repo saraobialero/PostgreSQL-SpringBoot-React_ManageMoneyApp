@@ -1,11 +1,9 @@
 package com.app.manage_money.model;
 
-import com.app.manage_money.model.enums.AccountType;
-import com.app.manage_money.model.enums.State;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.math.BigDecimal;
+
 
 @Data
 @Entity

@@ -5,6 +5,7 @@ import com.app.manage_money.model.enums.State;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.Set;
 
 
 @Data
@@ -26,6 +27,12 @@ public class Account {
 
     @Column(name = "balance")
     private BigDecimal balance;
+
+    @OneToMany(mappedBy = "account")
+    private Set<SavingPlan> savingPlans;
+
+    @OneToMany(mappedBy = "account")
+    private Set<Transaction> transactions;
 
 
 }

@@ -17,9 +17,9 @@ public class RecurringTransaction {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "label_id")
-    private int labelId;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "label_id")
+    private Label label;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")

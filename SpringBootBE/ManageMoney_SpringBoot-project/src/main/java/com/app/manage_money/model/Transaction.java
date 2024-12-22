@@ -17,11 +17,13 @@ public class Transaction {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "label_id")
-    private int labelId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "label_id")
+    private Label label;
 
-    @Column(name = "account_id")
-    private int accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "name")
     private String name;
@@ -47,6 +49,7 @@ public class Transaction {
 
     @Column(name = "transaction_date")
     private LocalDate transactionDate;
+
 
 
 

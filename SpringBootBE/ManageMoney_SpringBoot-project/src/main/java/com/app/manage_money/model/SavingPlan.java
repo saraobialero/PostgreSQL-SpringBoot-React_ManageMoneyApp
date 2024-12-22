@@ -15,8 +15,9 @@ public class SavingPlan {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "account_id")
-    private int accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "target_amount")
     private BigDecimal targetAmount;

@@ -4,6 +4,8 @@ import com.app.manage_money.model.enums.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 
 @Data
 @Entity
@@ -15,13 +17,12 @@ public class Label {
     @Column(name = "id")
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category_type")
-    private CategoryType categoryType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "label_type")
-    private LabelType labelType;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "category_type", referencedColumnName = "category_type"),
+            @JoinColumn(name = "label_type", referencedColumnName = "allowed_label_type")
+    })
+    private CategoryLabelMapping categoryLabelMapping;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
@@ -30,4 +31,9 @@ public class Label {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @OneToMany(mappedBy = "label")
+    private Set<RecurringTransaction> recurringTransactions;
+
+    @OneToMany(mappedBy = "label")
+    private Set<Transaction> transactions;
 }

@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @AllArgsConstructor
 @Setter
 @Getter
 public class LabelException extends RuntimeException {
     private final ErrorResponse response;
+
+
 
     @Override
     public String getMessage() {

@@ -8,6 +8,7 @@ import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.State;
 import com.app.manage_money.repository.AccountRepository;
 import com.app.manage_money.service.functions.AccountFunctions;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,14 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Service
 public class AccountService implements AccountFunctions {
 
  private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
 
     @Override
  public AccountDTO addAccount(Account account) {

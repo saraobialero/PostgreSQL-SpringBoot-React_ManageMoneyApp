@@ -1,5 +1,6 @@
 package com.app.manage_money.exception;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,8 @@ import lombok.Setter;
 @Getter
 public class CategoryLabelMappingException extends RuntimeException {
     private final ErrorResponse response;
+
+
 
     @Override
     public String getMessage() {

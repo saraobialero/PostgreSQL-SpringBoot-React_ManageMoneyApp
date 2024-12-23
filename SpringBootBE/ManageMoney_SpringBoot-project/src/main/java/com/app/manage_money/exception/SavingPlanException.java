@@ -11,6 +11,7 @@ import lombok.Setter;
 public class SavingPlanException extends RuntimeException {
     private final ErrorResponse response;
 
+
     @Override
     public String getMessage() {
         return response.getMessage();

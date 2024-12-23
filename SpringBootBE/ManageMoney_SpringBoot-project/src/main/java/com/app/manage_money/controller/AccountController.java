@@ -7,6 +7,7 @@ import com.app.manage_money.model.enums.CategoryType;
 import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.State;
 import com.app.manage_money.service.AccountService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,15 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
 
     private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
-    }
 
     // CREATE
     @PostMapping

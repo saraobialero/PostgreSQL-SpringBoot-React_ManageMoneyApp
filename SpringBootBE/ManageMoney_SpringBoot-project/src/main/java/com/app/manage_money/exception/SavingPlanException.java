@@ -5,15 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-@AllArgsConstructor
+
 @Setter
 @Getter
-public class SavingPlanException extends RuntimeException {
-    private final ErrorResponse response;
-
-
-    @Override
-    public String getMessage() {
-        return response.getMessage();
+public class SavingPlanException extends BaseException {
+    public SavingPlanException(String message, String details) {
+        super(message, details);
     }
 }

@@ -5,15 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-@AllArgsConstructor
+
 @Setter
 @Getter
-public class AccountException extends RuntimeException {
-    private final ErrorResponse response;
-
-
-    @Override
-    public String getMessage() {
-        return response.getMessage();
+public class AccountException extends BaseException {
+    public AccountException(String message, String details) {
+        super(message, details);
     }
 }

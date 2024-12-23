@@ -1,19 +1,13 @@
 package com.app.manage_money.exception;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Setter
 @Getter
-public class LabelException extends RuntimeException {
-    private final ErrorResponse response;
-
-
-
-    @Override
-    public String getMessage() {
-        return response.getMessage();
+public class LabelException extends BaseException {
+    public LabelException(String message, String details) {
+        super(message, details);
     }
 }

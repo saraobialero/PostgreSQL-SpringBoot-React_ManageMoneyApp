@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 @Setter
 @Getter
-public class TransactionException extends RuntimeException {
-    private final ErrorResponse response;
-
-
-    @Override
-    public String getMessage() {
-        return response.getMessage();
+public class TransactionException extends BaseException {
+    public TransactionException(String message, String details) {
+        super(message, details);
     }
 }

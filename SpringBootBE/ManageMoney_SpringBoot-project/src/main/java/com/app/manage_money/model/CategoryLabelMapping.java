@@ -6,7 +6,7 @@ import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
+//Keep?
 @Data
 @Entity
 @Table(name = "category_label_mappings")

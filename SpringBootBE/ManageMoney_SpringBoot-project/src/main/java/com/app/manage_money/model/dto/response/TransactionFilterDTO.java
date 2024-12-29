@@ -1,4 +1,4 @@
-package com.app.manage_money.model.dto;
+package com.app.manage_money.model.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

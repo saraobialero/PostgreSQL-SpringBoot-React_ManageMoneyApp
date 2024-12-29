@@ -1,8 +1,8 @@
 package com.app.manage_money.service.functions;
 
 import com.app.manage_money.model.Account;
-import com.app.manage_money.model.dto.TransactionDTO;
-import com.app.manage_money.model.dto.AccountDTO;
+import com.app.manage_money.model.dto.response.TransactionDTO;
+import com.app.manage_money.model.dto.response.AccountDTO;
 
 import com.app.manage_money.model.enums.CategoryType;
 import com.app.manage_money.model.enums.LabelType;

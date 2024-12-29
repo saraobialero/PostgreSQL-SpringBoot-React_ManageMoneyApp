@@ -17,6 +17,7 @@ public enum ErrorCode {
 
     // Account errors
     ANF("Account not found", HttpStatus.NOT_FOUND, ExitCode.KO),
+    NA("There aren't any account inside the list", HttpStatus.NO_CONTENT, ExitCode.KO),
     AIA("Account is inactive", HttpStatus.BAD_REQUEST, ExitCode.KO),
     AIB("Account is blocked", HttpStatus.BAD_REQUEST, ExitCode.KO),
     AIC("Account is closed", HttpStatus.BAD_REQUEST, ExitCode.KO),

@@ -2,11 +2,11 @@ package com.app.manage_money.exception;
 
 import java.util.Date;
 
-public class ErrorResponse {
+public class ExceptionResponse {
     private Date timestamp;
     private String message;
     private String details;
-    public ErrorResponse(Date timestamp, String message, String details) {
+    public ExceptionResponse(Date timestamp, String message, String details) {
         super();
         this.timestamp = timestamp;
         this.message = message;

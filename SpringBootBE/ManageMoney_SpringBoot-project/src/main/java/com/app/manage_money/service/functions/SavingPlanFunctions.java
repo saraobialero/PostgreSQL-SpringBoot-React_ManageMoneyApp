@@ -1,7 +1,7 @@
 package com.app.manage_money.service.functions;
 
 import com.app.manage_money.model.SavingPlan;
-import com.app.manage_money.model.dto.SavingPlanDTO;
+import com.app.manage_money.model.dto.response.SavingPlanDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,21 +1,29 @@
 package com.app.manage_money.service;
 
+import com.app.manage_money.exception.AccountException;
 import com.app.manage_money.model.Account;
-import com.app.manage_money.model.dto.AccountDTO;
-import com.app.manage_money.model.dto.TransactionDTO;
+import com.app.manage_money.model.dto.response.AccountDTO;
+import com.app.manage_money.model.dto.response.ErrorResponse;
+import com.app.manage_money.model.dto.response.TransactionDTO;
 import com.app.manage_money.model.enums.CategoryType;
+import com.app.manage_money.model.enums.ErrorCode;
 import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.State;
 import com.app.manage_money.repository.AccountRepository;
 import com.app.manage_money.service.functions.AccountFunctions;
+import com.app.manage_money.utils.DTOConverter;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.app.manage_money.utils.DTOConverter.convertCollection;
 
 @RequiredArgsConstructor
 @Service
@@ -34,9 +42,20 @@ public class AccountService implements AccountFunctions {
   return null;
  }
 
+ @Transactional
  @Override
  public Set<AccountDTO> getAccounts() {
-  return Set.of();
+  Set<Account> accounts = new HashSet<>(accountRepository.findAll());
+  //TODO: Single responsability -> Create specific method
+  if (accounts.isEmpty()) {
+   throw new AccountException(
+           new ErrorResponse(
+                   ErrorCode.NA,
+                   "Any account founded inside the list"
+           )
+   );
+  }
+  return convertCollection(accounts, DTOConverter::convertToAccountDTO, HashSet::new);
  }
 
  @Override

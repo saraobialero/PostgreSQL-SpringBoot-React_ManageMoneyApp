@@ -1,10 +1,10 @@
 package com.app.manage_money.service.functions;
 
 import com.app.manage_money.model.Transaction;
-import com.app.manage_money.model.dto.TransactionDTO;
-import com.app.manage_money.model.dto.TransactionFilterDTO;
-import com.app.manage_money.model.dto.TransferRequestDTO;
-import com.app.manage_money.model.dto.TransferResultDTO;
+import com.app.manage_money.model.dto.response.TransactionDTO;
+import com.app.manage_money.model.dto.response.TransactionFilterDTO;
+import com.app.manage_money.model.dto.response.TransferRequestDTO;
+import com.app.manage_money.model.dto.response.TransferResultDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

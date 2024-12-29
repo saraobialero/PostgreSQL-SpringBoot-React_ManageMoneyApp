@@ -1,7 +1,7 @@
 package com.app.manage_money.service.functions;
 
 import com.app.manage_money.model.RecurringTransaction;
-import com.app.manage_money.model.dto.RecurringTransactionDTO;
+import com.app.manage_money.model.dto.response.RecurringTransactionDTO;
 import com.app.manage_money.model.enums.Frequency;
 
 import java.time.LocalDate;

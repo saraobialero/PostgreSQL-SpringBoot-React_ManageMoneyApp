@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CategoryLabelMappingException extends RuntimeException {
-    private final ErrorResponse response;
-
-
+    private final ExceptionResponse response;
 
     @Override
     public String getMessage() {

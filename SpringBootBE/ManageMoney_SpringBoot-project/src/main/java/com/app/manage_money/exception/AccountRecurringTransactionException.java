@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AccountRecurringTransactionException extends RuntimeException {
-    private final ErrorResponse response;
+    private final ExceptionResponse response;
 
 
     @Override

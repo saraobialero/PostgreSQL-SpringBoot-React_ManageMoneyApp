@@ -1,16 +1,16 @@
 package com.app.manage_money.controller;
 
 import com.app.manage_money.model.Account;
-import com.app.manage_money.model.dto.AccountDTO;
-import com.app.manage_money.model.dto.TransactionDTO;
+import com.app.manage_money.model.dto.response.AccountDTO;
+import com.app.manage_money.model.dto.response.SuccessResponse;
+import com.app.manage_money.model.dto.response.TransactionDTO;
 import com.app.manage_money.model.enums.CategoryType;
 import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.State;
 import com.app.manage_money.service.AccountService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +41,8 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<Set<AccountDTO>> getAllAccounts() {
-        return null;
+    public ResponseEntity<SuccessResponse<Set<AccountDTO>>> getAllAccounts() {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.getAccounts()), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/balance")

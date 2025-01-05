@@ -5,6 +5,8 @@ import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 //Keep?
 @Data
@@ -18,14 +20,17 @@ public class CategoryLabelMapping {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "category_type")
     private CategoryType categoryType;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "allowed_label_type")
     private LabelType allowedLabelType;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "transaction_type")
     private TransactionType transactionType;
 

@@ -46,5 +46,7 @@ public enum LabelType {
     RUN_EQUIPMENT,
     HIKE_EQUIPMENT,
     WORK_EQUIPMENT,
-    OTHER_SPORT
+    OTHER_SPORT,
+    TRANSFER_IN,
+    TRANSFER_OUT
 }

@@ -4,6 +4,8 @@ import com.app.manage_money.model.enums.Frequency;
 import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ public class RecurringTransaction {
     private Label label;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "type")
     private TransactionType transactionType;
 
@@ -29,6 +32,7 @@ public class RecurringTransaction {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "frequency")
     private Frequency frequency;
 

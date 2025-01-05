@@ -3,6 +3,8 @@ package com.app.manage_money.model;
 import com.app.manage_money.model.enums.TransactionRole;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Data
 @Entity
@@ -21,5 +23,6 @@ public class AccountRecurringTransaction {
     private RecurringTransaction recurringTransaction;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private TransactionRole transactionRole;
 }

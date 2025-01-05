@@ -1,6 +1,8 @@
 package com.app.manage_money.service.functions;
 
 import com.app.manage_money.model.Account;
+import com.app.manage_money.model.dto.request.AddAccountRequest;
+import com.app.manage_money.model.dto.request.TransferMoneyRequest;
 import com.app.manage_money.model.dto.response.TransactionDTO;
 import com.app.manage_money.model.dto.response.AccountDTO;
 
@@ -16,20 +18,17 @@ import java.util.Set;
 
 public interface AccountFunctions {
     //CREATE
-    AccountDTO addAccount (Account account);
+    AccountDTO addAccount (AddAccountRequest request);
 
     //READ
     AccountDTO getAccountById (Integer accountId);
     Set<AccountDTO> getAccounts ();
 
-    BigDecimal calculateTotalBalance(Integer accountId);
+    BigDecimal calculateTotalBalance();
     Map<String, BigDecimal> getAccountAnalytics(Integer accountId, LocalDate startDate, LocalDate endDate);
 
     List<TransactionDTO> getAccountTransactions(Integer accountId, LocalDate startDate, LocalDate endDate);
-    boolean validateTransaction(Integer accountId, BigDecimal amount); // Verifica se c'è saldo sufficiente
-
     Map<CategoryType, BigDecimal> getExpensesByCategory(Integer accountId, LocalDate startDate, LocalDate endDate); //Move to label?
-
     Map<LabelType, BigDecimal> getExpensesByLabel(Integer accountId, LocalDate startDate, LocalDate endDate); // Move to label?
 
 
@@ -37,7 +36,7 @@ public interface AccountFunctions {
     BigDecimal updateBalance(Integer accountId, BigDecimal amount);
     State updateAccountStatus(Integer accountId, State newState);
 
-    AccountDTO transferMoney(Integer sourceAccountId, Integer destinationAccountId, BigDecimal amount, String description); //Move to Transaction???
+    Set<AccountDTO> transferMoney(Integer sourceAccountId, Integer destinationAccountId, TransferMoneyRequest request);
 
     //DELETE
     boolean deleteAccountById (Integer accountId);

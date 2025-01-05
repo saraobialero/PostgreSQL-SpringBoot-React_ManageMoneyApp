@@ -1,6 +1,8 @@
 package com.app.manage_money.controller;
 
 import com.app.manage_money.model.Account;
+import com.app.manage_money.model.dto.request.AddAccountRequest;
+import com.app.manage_money.model.dto.request.TransferMoneyRequest;
 import com.app.manage_money.model.dto.response.AccountDTO;
 import com.app.manage_money.model.dto.response.SuccessResponse;
 import com.app.manage_money.model.dto.response.TransactionDTO;
@@ -8,6 +10,8 @@ import com.app.manage_money.model.enums.CategoryType;
 import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.State;
 import com.app.manage_money.service.AccountService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,14 +34,15 @@ public class AccountController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<AccountDTO> createAccount(@RequestBody Account account) {
-        return null;
+    public ResponseEntity<SuccessResponse<AccountDTO>> createAccount(@RequestBody @Valid AddAccountRequest accountRequest) {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.addAccount(accountRequest)), HttpStatus.OK);
     }
+
 
     // READ
     @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Integer id) {
-        return null;
+    public ResponseEntity<SuccessResponse<AccountDTO>> getAccountById(@PathVariable Integer id) {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.getAccountById(id)), HttpStatus.OK);
     }
 
     @GetMapping
@@ -45,73 +50,91 @@ public class AccountController {
         return new ResponseEntity<>(new SuccessResponse<>(accountService.getAccounts()), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/balance")
-    public ResponseEntity<BigDecimal> getAccountBalance(@PathVariable Integer id) {
-        return null;
+    @GetMapping("/total-balance")
+    public ResponseEntity<SuccessResponse<BigDecimal>> getAccountsBalance() {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.calculateTotalBalance()), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/analytics")
-    public ResponseEntity<Map<String, BigDecimal>> getAccountAnalytics(
+    public ResponseEntity<SuccessResponse<Map<String, BigDecimal>>> getAccountAnalytics(
             @PathVariable Integer id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return null;
+        return new ResponseEntity<>(
+                new SuccessResponse<>(accountService.getAccountAnalytics(id, startDate, endDate)),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<List<TransactionDTO>> getAccountTransactions(
+    public ResponseEntity<SuccessResponse<List<TransactionDTO>>> getAccountTransactions(
             @PathVariable Integer id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return null;
+        return new ResponseEntity<>(
+                new SuccessResponse<>(accountService.getAccountTransactions(id, startDate, endDate)),
+                HttpStatus.OK
+        );
     }
 
-    @GetMapping("/{id}/validate-transaction")
-    public ResponseEntity<Boolean> validateTransaction(
-            @PathVariable Integer id,
-            @RequestParam BigDecimal amount) {
-        return null;
-    }
 
     @GetMapping("/{id}/expenses/by-category")
-    public ResponseEntity<Map<CategoryType, BigDecimal>> getExpensesByCategory(
+    public ResponseEntity<SuccessResponse<Map<CategoryType, BigDecimal>>> getExpensesByCategory(
             @PathVariable Integer id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return null;
+        return new ResponseEntity<>(
+                new SuccessResponse<>(accountService.getExpensesByCategory(id, startDate, endDate)),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{id}/expenses/by-label")
-    public ResponseEntity<Map<LabelType, BigDecimal>> getExpensesByLabel(
+    public ResponseEntity<SuccessResponse<Map<LabelType, BigDecimal>>> getExpensesByLabel(
             @PathVariable Integer id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return null;
+        return new ResponseEntity<>(
+                new SuccessResponse<>(accountService.getExpensesByLabel(id, startDate, endDate)),
+                HttpStatus.OK
+        );
     }
+
+
 
     // UPDATE
-    @PutMapping("/{id}/balance")
-    public ResponseEntity<BigDecimal> updateBalance(
+    @PatchMapping("/{id}/balance")
+    public ResponseEntity<SuccessResponse<BigDecimal>> updateBalance(
             @PathVariable Integer id,
             @RequestParam BigDecimal amount) {
-        return null;
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.updateBalance(id, amount)), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<State> updateAccountStatus(
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<SuccessResponse<State>> updateAccountStatus(
             @PathVariable Integer id,
-            @RequestBody State newState) {
-        return null;
+            @RequestParam State newState) {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.updateAccountStatus(id, newState)), HttpStatus.OK);
     }
+
+    @PutMapping("/{sourceId}/transfer/{destinationId}")
+    public ResponseEntity<SuccessResponse<Set<AccountDTO>>> transferMoney(
+            @PathVariable @NotNull Integer sourceId,
+            @PathVariable @NotNull Integer destinationId,
+            @Valid @RequestBody TransferMoneyRequest request) {
+
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.transferMoney(sourceId, destinationId, request)), HttpStatus.OK);
+    }
+
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteAccount(@PathVariable Integer id) {
-        return null;
+    public ResponseEntity<SuccessResponse<Boolean>> deleteAccount(@PathVariable Integer id) {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.deleteAccountById(id)), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Boolean> deleteAllAccounts() {
-        return null;
+    public ResponseEntity<SuccessResponse<Boolean>> deleteAllAccounts() {
+        return new ResponseEntity<>(new SuccessResponse<>(accountService.deleteAll()), HttpStatus.OK);
     }
 }

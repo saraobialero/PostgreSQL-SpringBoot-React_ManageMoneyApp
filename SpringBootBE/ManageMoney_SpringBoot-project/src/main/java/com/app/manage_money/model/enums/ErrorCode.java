@@ -22,6 +22,8 @@ public enum ErrorCode {
     AIB("Account is blocked", HttpStatus.BAD_REQUEST, ExitCode.KO),
     AIC("Account is closed", HttpStatus.BAD_REQUEST, ExitCode.KO),
     IB("Insufficient balance", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    NCA("No account provided to add", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    IAS("Invalid account state", HttpStatus.BAD_REQUEST, ExitCode.KO),
 
     // Label errors
     LNF("Label not found", HttpStatus.NOT_FOUND, ExitCode.KO),

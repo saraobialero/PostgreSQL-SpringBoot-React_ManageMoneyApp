@@ -1,9 +1,9 @@
 package com.app.manage_money.model.enums;
 
 public enum AccountType {
-    SATISPAY,
-    SAVINGS,
+   SAVINGS,
     CREDIT_CARD,
     CASH,
-    INVESTMENT
+    INVESTMENT,
+    SATISPAY;
 }

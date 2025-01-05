@@ -4,6 +4,9 @@ import com.app.manage_money.model.enums.AccountType;
 import com.app.manage_money.model.enums.State;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -18,14 +21,16 @@ public class Account {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "account_type")
+    @Column(name = "account_type", nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "state")
-    private State state;
+    private State state = State.ACTIVE;
 
-    @Column(name = "balance")
+    @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
     @OneToMany(mappedBy = "account")

@@ -3,6 +3,8 @@ package com.app.manage_money.model;
 import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +31,7 @@ public class Transaction {
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "type")
     private TransactionType transactionType;
 

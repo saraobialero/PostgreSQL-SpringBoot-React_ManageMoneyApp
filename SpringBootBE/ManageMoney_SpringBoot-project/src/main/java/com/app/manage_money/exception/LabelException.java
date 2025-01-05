@@ -1,10 +1,10 @@
 package com.app.manage_money.exception;
 
-
 import com.app.manage_money.model.dto.response.ErrorResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @AllArgsConstructor
 @Setter

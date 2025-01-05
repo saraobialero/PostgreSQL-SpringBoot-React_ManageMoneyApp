@@ -3,6 +3,8 @@ package com.app.manage_money.model;
 import com.app.manage_money.model.enums.*;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.util.Set;
 
@@ -25,6 +27,7 @@ public class Label {
     private CategoryLabelMapping categoryLabelMapping;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "transaction_type")
     private TransactionType transactionType;
 

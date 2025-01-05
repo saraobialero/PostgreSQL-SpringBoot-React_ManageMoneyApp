@@ -10,5 +10,6 @@ public enum CategoryType {
     SHOPPING,
     CAR,
     TRANSPORT,
-    SPORT;
+    SPORT,
+    UTILITY
 }

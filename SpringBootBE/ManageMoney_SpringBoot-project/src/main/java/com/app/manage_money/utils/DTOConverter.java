@@ -4,6 +4,8 @@ package com.app.manage_money.utils;
 import com.app.manage_money.model.*;
 import com.app.manage_money.model.dto.response.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -95,6 +97,17 @@ public class DTOConverter {
                 .account(convertToAccountDTO(art.getAccount()))
                 .recurringTransaction(convertToRecurringTransactionDTO(art.getRecurringTransaction()))
                 .transactionRole(art.getTransactionRole())
+                .build();
+    }
+
+    public static AccountAnalyticsDTO buildAccountAnalyticsDTO(Account account, BigDecimal totalIncome, BigDecimal totalExpenses, LocalDate startDate, LocalDate endDate) {
+        return AccountAnalyticsDTO.builder()
+                .currentBalance(account.getBalance())
+                .totalIncome(totalIncome)
+                .totalExpenses(totalExpenses)
+                .cashFlow(totalIncome.subtract(totalExpenses))
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.app.manage_money.service.functions;
 import com.app.manage_money.model.Account;
 import com.app.manage_money.model.dto.request.AddAccountRequest;
 import com.app.manage_money.model.dto.request.TransferMoneyRequest;
+import com.app.manage_money.model.dto.response.AccountAnalyticsDTO;
 import com.app.manage_money.model.dto.response.TransactionDTO;
 import com.app.manage_money.model.dto.response.AccountDTO;
 
@@ -25,12 +26,10 @@ public interface AccountFunctions {
     Set<AccountDTO> getAccounts ();
 
     BigDecimal calculateTotalBalance();
-    Map<String, BigDecimal> getAccountAnalytics(Integer accountId, LocalDate startDate, LocalDate endDate);
-
+    AccountAnalyticsDTO getAccountAnalytics(Integer accountId, LocalDate startDate, LocalDate endDate);
     List<TransactionDTO> getAccountTransactions(Integer accountId, LocalDate startDate, LocalDate endDate);
-    Map<CategoryType, BigDecimal> getExpensesByCategory(Integer accountId, LocalDate startDate, LocalDate endDate); //Move to label?
-    Map<LabelType, BigDecimal> getExpensesByLabel(Integer accountId, LocalDate startDate, LocalDate endDate); // Move to label?
-
+    List<TransactionDTO> getExpensesByAccountAndLabelType( Integer accountId, LabelType labelType, LocalDate startDate, LocalDate endDate);
+    List<TransactionDTO> getExpensesByAccountAndCategory(Integer accountId, CategoryType category, LocalDate startDate, LocalDate endDate);
 
     //UPDATE
     BigDecimal updateBalance(Integer accountId, BigDecimal amount);

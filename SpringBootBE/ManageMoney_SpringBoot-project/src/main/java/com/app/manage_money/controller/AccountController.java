@@ -3,6 +3,7 @@ package com.app.manage_money.controller;
 import com.app.manage_money.model.Account;
 import com.app.manage_money.model.dto.request.AddAccountRequest;
 import com.app.manage_money.model.dto.request.TransferMoneyRequest;
+import com.app.manage_money.model.dto.response.AccountAnalyticsDTO;
 import com.app.manage_money.model.dto.response.AccountDTO;
 import com.app.manage_money.model.dto.response.SuccessResponse;
 import com.app.manage_money.model.dto.response.TransactionDTO;
@@ -56,7 +57,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/analytics")
-    public ResponseEntity<SuccessResponse<Map<String, BigDecimal>>> getAccountAnalytics(
+    public ResponseEntity<SuccessResponse<AccountAnalyticsDTO>> getAccountAnalytics(
             @PathVariable Integer id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
@@ -77,26 +78,31 @@ public class AccountController {
         );
     }
 
-
-    @GetMapping("/{id}/expenses/by-category")
-    public ResponseEntity<SuccessResponse<Map<CategoryType, BigDecimal>>> getExpensesByCategory(
-            @PathVariable Integer id,
+    @GetMapping("/{accountId}/expenses/by-category")
+    public ResponseEntity<SuccessResponse<List<TransactionDTO>>> getExpensesByCategory(
+            @PathVariable Integer accountId,
+            @RequestParam CategoryType category,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return new ResponseEntity<>(
-                new SuccessResponse<>(accountService.getExpensesByCategory(id, startDate, endDate)),
-                HttpStatus.OK
+
+        return ResponseEntity.ok(
+                new SuccessResponse<>(
+                        accountService.getExpensesByAccountAndCategory(accountId, category, startDate, endDate)
+                )
         );
     }
 
     @GetMapping("/{id}/expenses/by-label")
-    public ResponseEntity<SuccessResponse<Map<LabelType, BigDecimal>>> getExpensesByLabel(
+    public ResponseEntity<SuccessResponse<List<TransactionDTO>>> getExpensesByLabelType(
             @PathVariable Integer id,
+            @RequestParam LabelType labelType,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return new ResponseEntity<>(
-                new SuccessResponse<>(accountService.getExpensesByLabel(id, startDate, endDate)),
-                HttpStatus.OK
+
+        return ResponseEntity.ok(
+                new SuccessResponse<>(
+                        accountService.getExpensesByAccountAndLabelType(id, labelType, startDate, endDate)
+                )
         );
     }
 

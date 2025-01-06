@@ -7,13 +7,12 @@ import com.app.manage_money.model.Label;
 import com.app.manage_money.model.Transaction;
 import com.app.manage_money.model.dto.request.AddAccountRequest;
 import com.app.manage_money.model.dto.request.TransferMoneyRequest;
+import com.app.manage_money.model.dto.response.AccountAnalyticsDTO;
 import com.app.manage_money.model.dto.response.AccountDTO;
 import com.app.manage_money.model.dto.response.ErrorResponse;
 import com.app.manage_money.model.dto.response.TransactionDTO;
 import com.app.manage_money.model.enums.*;
-import com.app.manage_money.repository.AccountRepository;
-import com.app.manage_money.repository.LabelRepository;
-import com.app.manage_money.repository.TransactionRepository;
+import com.app.manage_money.repository.*;
 import com.app.manage_money.service.functions.AccountFunctions;
 import com.app.manage_money.utils.BigDecimalUtils;
 import com.app.manage_money.utils.DTOConverter;
@@ -26,8 +25,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.app.manage_money.utils.DTOConverter.convertCollection;
-import static com.app.manage_money.utils.DTOConverter.convertToAccountDTO;
+import static com.app.manage_money.utils.DTOConverter.*;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +33,8 @@ public class AccountService implements AccountFunctions {
  private final AccountRepository accountRepository;
  private final TransactionRepository transactionRepository;
  private final LabelRepository labelRepository;
+ private final SavingPlanRepository savingPlanRepository;
+ private final AccountRecurringTransactionRepository accountRecurringTransactionRepository;
 
  @Transactional
  @Override
@@ -71,11 +71,14 @@ public class AccountService implements AccountFunctions {
  }
 
  @Override
- public Map<String, BigDecimal> getAccountAnalytics(Integer accountId, LocalDate startDate, LocalDate endDate) {
+ public AccountAnalyticsDTO getAccountAnalytics(Integer accountId, LocalDate startDate, LocalDate endDate) {
+  validateDateRange(startDate, endDate);
   Account account = accountExists(accountId);
 
-  List<Transaction> transactions = transactionRepository.findByAccountIdAndTransactionDateBetween(
+  List<Transaction> transactions = transactionRepository.findByAccountIdAndTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(
           accountId, startDate, endDate);
+
+  accountTransactionIsEmpty(transactions, accountId, "", startDate, endDate);
 
   BigDecimal totalIncome = transactions.stream()
           .filter(t -> t.getTransactionType() == TransactionType.INCOME)
@@ -87,19 +90,12 @@ public class AccountService implements AccountFunctions {
           .map(Transaction::getAmount)
           .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-  BigDecimal balance = account.getBalance();
-  BigDecimal cashFlow = totalIncome.subtract(totalExpenses);
-
-  return Map.of(
-          "totalIncome", totalIncome,
-          "totalExpenses", totalExpenses,
-          "balance", balance,
-          "cashFlow", cashFlow
-  );
+  return buildAccountAnalyticsDTO(account, totalIncome, totalExpenses, startDate, endDate);
  }
 
  @Override
  public List<TransactionDTO> getAccountTransactions(Integer accountId, LocalDate startDate, LocalDate endDate) {
+  validateDateRange(startDate, endDate);
   accountExists(accountId);
 
   List<Transaction> transactions = transactionRepository.findByAccountIdAndTransactionDateBetween(
@@ -111,39 +107,35 @@ public class AccountService implements AccountFunctions {
  }
 
  @Override
- public Map<CategoryType, BigDecimal> getExpensesByCategory(Integer accountId, LocalDate startDate, LocalDate endDate) {
-  accountExists(accountId);
+ public List<TransactionDTO> getExpensesByAccountAndCategory(Integer accountId, CategoryType category, LocalDate startDate, LocalDate endDate) {
+  validateDateRange(startDate, endDate);
+  List<Transaction> transactions = transactionRepository
+          .findByAccountIdAndLabel_CategoryLabelMapping_CategoryTypeAndTransactionTypeAndTransactionDateBetween(
+                  accountId,
+                  category,
+                  TransactionType.EXPENSE,
+                  startDate,
+                  endDate);
 
-  List<Transaction> expenses = transactionRepository.findByAccountIdAndTransactionTypeAndTransactionDateBetween(
-          accountId, TransactionType.EXPENSE, startDate, endDate);
-
-  return expenses.stream()
-          .filter(t -> t.getLabel() != null)
-          .collect(Collectors.groupingBy(
-                  t -> t.getLabel().getCategoryLabelMapping().getCategoryType(),
-                  Collectors.mapping(
-                          Transaction::getAmount,
-                          Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
-                  )
-          ));
+  accountTransactionIsEmpty(transactions, accountId, category, startDate, endDate);
+  return DTOConverter.convertCollection(transactions, DTOConverter::convertToTransactionDTO, ArrayList::new
+  );
  }
 
  @Override
- public Map<LabelType, BigDecimal> getExpensesByLabel(Integer accountId, LocalDate startDate, LocalDate endDate) {
-  accountExists(accountId);
+ public List<TransactionDTO> getExpensesByAccountAndLabelType(Integer accountId, LabelType labelType, LocalDate startDate, LocalDate endDate) {
+  validateDateRange(startDate, endDate);
+  List<Transaction> transactions = transactionRepository
+          .findByAccountIdAndLabel_CategoryLabelMapping_AllowedLabelTypeAndTransactionTypeAndTransactionDateBetween(
+                  accountId,
+                  labelType,
+                  TransactionType.EXPENSE,
+                  startDate,
+                  endDate);
 
-  List<Transaction> expenses = transactionRepository.findByAccountIdAndTransactionTypeAndTransactionDateBetween(
-          accountId, TransactionType.EXPENSE, startDate, endDate);
-
-  return expenses.stream()
-          .filter(t -> t.getLabel() != null)
-          .collect(Collectors.groupingBy(
-                  t -> t.getLabel().getCategoryLabelMapping().getAllowedLabelType(),
-                  Collectors.mapping(
-                          Transaction::getAmount,
-                          Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
-                  )
-          ));
+  accountTransactionIsEmpty(transactions, accountId, labelType, startDate, endDate);
+  return DTOConverter.convertCollection(transactions, DTOConverter::convertToTransactionDTO, ArrayList::new
+  );
  }
 
  @Transactional
@@ -188,6 +180,9 @@ public class AccountService implements AccountFunctions {
  @Override
  public boolean deleteAccountById(Integer accountId) {
   Account account = accountExists(accountId);
+  transactionRepository.deleteAllByAccount(account);
+  savingPlanRepository.deleteAllByAccount(account);
+  accountRecurringTransactionRepository.deleteAllByAccount(account);
   accountRepository.delete(account);
   return true;
  }
@@ -197,6 +192,9 @@ public class AccountService implements AccountFunctions {
  public boolean deleteAll() {
   Set<Account> accounts = accountListExists();
   accountListIsEmpty(accounts);
+  transactionRepository.deleteAll();
+  savingPlanRepository.deleteAll();
+  accountRecurringTransactionRepository.deleteAll();
   accountRepository.deleteAll();
   return true;
  }
@@ -238,6 +236,23 @@ public class AccountService implements AccountFunctions {
    );
   }
  }
+ private <T> void accountTransactionIsEmpty(List<Transaction> transactions, Integer accountId, T filter, LocalDate startDate, LocalDate endDate) {
+  if (transactions.isEmpty()) {
+   String filterType = filter instanceof String ? "" :
+           filter.getClass().getSimpleName().toLowerCase() + " ";
+
+   throw new AccountException(
+           new ErrorResponse(
+                   ErrorCode.TNF,
+                   String.format("No transactions found for account %d%s between %s and %s",
+                           accountId,
+                           filter instanceof String ? "" : " with " + filterType + filter,
+                           startDate,
+                           endDate)
+           )
+   );
+  }
+ }
  private void validateTransfer(Account sourceAccount, Account destinationAccount) {
   checkAccountState(sourceAccount);
   checkAccountState(destinationAccount);
@@ -259,11 +274,9 @@ public class AccountService implements AccountFunctions {
                   CategoryType.UTILITY, LabelType.TRANSFER_IN)
           .orElseThrow(() -> new LabelException(new ErrorResponse(ErrorCode.LNF, "Transfer in label not found")));
 
-  // Aggiorna i saldi
   destinationAccount.setBalance(destinationAccount.getBalance().add(request.getAmount()));
   sourceAccount.setBalance(sourceAccount.getBalance().subtract(request.getAmount()));
 
-  // Salva le transazioni con le rispettive label
   saveSourceTransaction(sourceAccount, destinationAccount, request, transferOutLabel);
   saveDestinationTransaction(sourceAccount, destinationAccount, request, transferInLabel);
  }
@@ -302,6 +315,34 @@ public class AccountService implements AccountFunctions {
            new ErrorResponse(ErrorCode.IB,
                    "Account with id " + account.getId() + " doesn't have enough balance"
            ));
+  }
+ }
+ private void validateDateRange(LocalDate startDate, LocalDate endDate) {
+  if (startDate == null || endDate == null) {
+   throw new AccountException(
+           new ErrorResponse(
+                   ErrorCode.ITD,
+                   "Start date and end date must not be null"
+           )
+   );
+  }
+
+  if (startDate.isAfter(endDate)) {
+   throw new AccountException(
+           new ErrorResponse(
+                   ErrorCode.ITD,
+                   "Start date must be before end date"
+           )
+   );
+  }
+
+  if (startDate.isAfter(LocalDate.now()) || endDate.isAfter(LocalDate.now())) {
+   throw new AccountException(
+           new ErrorResponse(
+                   ErrorCode.ITD,
+                   "Dates cannot be in the future"
+           )
+   );
   }
  }
 }

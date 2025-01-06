@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface RecurringTransactionFunctions {
     // CREATE
+    //TODO change in Request
     RecurringTransactionDTO addRecurringTransaction(RecurringTransaction transaction, Frequency frequency);
 
     // READ
@@ -20,6 +21,7 @@ public interface RecurringTransactionFunctions {
     boolean updateNextOccurrence(Integer recurringTransactionId);
     boolean updateRecurringTransaction(Integer id, RecurringTransaction updatedTransaction);
     boolean toggleRecurringTransactionStatus(Integer id, boolean active);
+
 
     // Process
     void processRecurringTransactions();

@@ -208,6 +208,7 @@ public class AccountService implements AccountFunctions {
                           ErrorCode.ANF,
                           "Account with id " + accountId + " not found")));
  }
+
  private Set<Account> accountListExists () {
   return new HashSet<>(accountRepository.findAll());
  }

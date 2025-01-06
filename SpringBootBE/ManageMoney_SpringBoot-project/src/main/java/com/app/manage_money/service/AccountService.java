@@ -51,7 +51,7 @@ public class AccountService implements AccountFunctions {
   return convertToAccountDTO(account);
  }
 
- @Transactional
+
  @Override
  public Set<AccountDTO> getAccounts() {
   Set<Account> accounts = accountListExists();
@@ -150,6 +150,7 @@ public class AccountService implements AccountFunctions {
  @Override
  public BigDecimal updateBalance(Integer accountId, BigDecimal amount) {
   Account account = accountExists(accountId);
+  checkAccountState(account);
   account.setBalance(amount);
   accountRepository.save(account);
   return account.getBalance();
@@ -170,18 +171,8 @@ public class AccountService implements AccountFunctions {
   Account sourceAccount = accountExists(sourceAccountId);
   Account destinationAccount = accountExists(destinationAccountId);
 
-
-  validateTransfer(sourceAccount, destinationAccount, request);
-
-  //Verify balance (Create utility method?)
-  BigDecimal sourceBalance = sourceAccount.getBalance();
-  if (BigDecimalUtils.isGreaterThan(request.getAmount(), sourceBalance)) {
-   throw new AccountException(
-           new ErrorResponse(ErrorCode.IB,
-                   "Account with id " + sourceAccountId + " doesn't have enough balance"
-           ));
-  }
-
+  validateTransfer(sourceAccount, destinationAccount);
+  checkMajorBalance(sourceAccount, request);
   executeTransfer(sourceAccount, destinationAccount, request);
 
   accountRepository.save(destinationAccount);
@@ -247,23 +238,19 @@ public class AccountService implements AccountFunctions {
    );
   }
  }
- private void validateTransfer(Account sourceAccount, Account destinationAccount, TransferMoneyRequest request) {
-  if (sourceAccount.getState() != State.ACTIVE) {
+ private void validateTransfer(Account sourceAccount, Account destinationAccount) {
+  checkAccountState(sourceAccount);
+  checkAccountState(destinationAccount);
+ }
+ private void checkAccountState(Account account) {
+  if (account.getState() != State.ACTIVE) {
    throw new AccountException(
            new ErrorResponse(ErrorCode.IAS,
-                   "Source account with id " + sourceAccount.getId() + " is not active")
-   );
-  }
-
-  if (destinationAccount.getState() != State.ACTIVE) {
-   throw new AccountException(
-           new ErrorResponse(ErrorCode.IAS,
-                   "Destination account with id " + destinationAccount.getId() + " is not active")
+                   "Account with id " + account.getId() + " is not active")
    );
   }
  }
  private void executeTransfer(Account sourceAccount, Account destinationAccount, TransferMoneyRequest request) {
-  // Recupera le label all'inizio del trasferimento
   Label transferOutLabel = labelRepository.findByCategoryLabelMapping_CategoryTypeAndCategoryLabelMapping_AllowedLabelType(
                   CategoryType.UTILITY, LabelType.TRANSFER_OUT)
           .orElseThrow(() -> new LabelException(new ErrorResponse(ErrorCode.LNF, "Transfer out label not found")));
@@ -307,5 +294,14 @@ public class AccountService implements AccountFunctions {
   incomingTransaction.setLabel(transferInLabel);
 
   transactionRepository.save(incomingTransaction);
+ }
+ private void checkMajorBalance(Account account, TransferMoneyRequest request) {
+  BigDecimal sourceBalance = account.getBalance();
+  if (BigDecimalUtils.isGreaterThan(request.getAmount(), sourceBalance)) {
+   throw new AccountException(
+           new ErrorResponse(ErrorCode.IB,
+                   "Account with id " + account.getId() + " doesn't have enough balance"
+           ));
+  }
  }
 }

@@ -208,7 +208,6 @@ public class AccountService implements AccountFunctions {
                           ErrorCode.ANF,
                           "Account with id " + accountId + " not found")));
  }
-
  private Set<Account> accountListExists () {
   return new HashSet<>(accountRepository.findAll());
  }
@@ -244,7 +243,7 @@ public class AccountService implements AccountFunctions {
 
    throw new AccountException(
            new ErrorResponse(
-                   ErrorCode.TNF,
+                   ErrorCode.NCTS,
                    String.format("No transactions found for account %d%s between %s and %s",
                            accountId,
                            filter instanceof String ? "" : " with " + filterType + filter,

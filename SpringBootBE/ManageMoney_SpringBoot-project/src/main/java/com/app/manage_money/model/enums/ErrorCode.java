@@ -32,7 +32,7 @@ public enum ErrorCode {
 
     // Transaction errors
     TNF("Transaction not found", HttpStatus.NOT_FOUND, ExitCode.KO),
-    NCTS("TNo content inside transactions", HttpStatus.NO_CONTENT, ExitCode.KO),
+    NCTS("No content inside transactions", HttpStatus.NO_CONTENT, ExitCode.KO),
     ITA("Invalid transaction amount", HttpStatus.BAD_REQUEST, ExitCode.KO),
     NCT("No transaction provided to add", HttpStatus.BAD_REQUEST, ExitCode.KO),
     ITD("Invalid transaction date", HttpStatus.BAD_REQUEST, ExitCode.KO),

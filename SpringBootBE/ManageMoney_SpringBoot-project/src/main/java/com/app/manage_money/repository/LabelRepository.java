@@ -15,5 +15,7 @@ public interface LabelRepository extends JpaRepository<Label, Integer> {
             CategoryType categoryType,
             LabelType labelType
     );
-    Optional<Label> findByLabelType(LabelType labelType);
+    Optional<Label> findByCategoryLabelMapping_AllowedLabelType(LabelType labelType);
+
+    boolean existsByCategoryLabelMapping_AllowedLabelType(LabelType labelType);
 }

@@ -45,7 +45,9 @@ public enum ErrorCode {
     // SavingPlan errors
     SPNF("Saving plan not found", HttpStatus.NOT_FOUND, ExitCode.KO),
     SPTA("Saving plan target already reached", HttpStatus.BAD_REQUEST, ExitCode.KO),
-    SPIE("Saving plan is expired", HttpStatus.BAD_REQUEST, ExitCode.KO);
+    SPIE("Saving plan is expired", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    NCSP("No Saving plan provided to add", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    NSP("There aren't any saving plan inside the list", HttpStatus.NO_CONTENT, ExitCode.KO);
 
     private String message;
     private HttpStatus status;

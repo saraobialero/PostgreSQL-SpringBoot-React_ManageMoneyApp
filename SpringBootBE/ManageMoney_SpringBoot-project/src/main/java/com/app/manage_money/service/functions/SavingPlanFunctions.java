@@ -1,20 +1,22 @@
 package com.app.manage_money.service.functions;
 
 import com.app.manage_money.model.SavingPlan;
+import com.app.manage_money.model.dto.request.AddSavingPlanRequest;
 import com.app.manage_money.model.dto.response.SavingPlanDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface SavingPlanFunctions {
     // CREATE
-    SavingPlanDTO createSavingPlan(SavingPlan savingPlan);
+    SavingPlanDTO createSavingPlan(AddSavingPlanRequest addSavingPlanRequest);
 
     // READ
     SavingPlanDTO getSavingPlanById(Integer planId);
-    List<SavingPlanDTO> getAllSavingPlans();
-    List<SavingPlanDTO> getSavingPlansByAccount(Integer accountId);
+    Set<SavingPlanDTO> getAllSavingPlans();
+    Set<SavingPlanDTO> getSavingPlansByAccount(Integer accountId);
 
     // Analisi
     BigDecimal getCurrentAmount(Integer planId);

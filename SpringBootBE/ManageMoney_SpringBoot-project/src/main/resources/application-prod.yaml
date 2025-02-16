@@ -2,7 +2,7 @@ spring:
   application:
     name: manage_money
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:managemoney_dev}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:managemoney_prod}
     username: ${DB_USERNAME:money_manager}
     password: ${DB_PASSWORD:p0F2iwNraBb0V1}
     driver-class-name: org.postgresql.Driver

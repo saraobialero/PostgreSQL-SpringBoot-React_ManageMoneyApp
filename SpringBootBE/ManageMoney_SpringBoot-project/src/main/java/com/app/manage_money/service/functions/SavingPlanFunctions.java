@@ -28,9 +28,9 @@ public interface SavingPlanFunctions {
     // UPDATE
     BigDecimal updateProgress(Integer planId, BigDecimal contribution);
     boolean updateTargetAmount(Integer planId, BigDecimal newTarget);
+    BigDecimal withdrawFromSavingPlan(Integer planId, BigDecimal amount);
     boolean updateTargetDate(Integer planId, LocalDate newDate);
 
     // DELETE
     boolean deleteSavingPlan(Integer planId);
-    boolean deleteSavingPlansByAccount(Integer accountId);
 }

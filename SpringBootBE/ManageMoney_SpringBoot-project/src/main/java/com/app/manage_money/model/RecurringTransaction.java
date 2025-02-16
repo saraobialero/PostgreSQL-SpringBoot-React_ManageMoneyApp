@@ -9,6 +9,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Entity
@@ -22,6 +23,9 @@ public class RecurringTransaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "label_id")
     private Label label;
+
+    @OneToMany(mappedBy = "recurringTransaction")
+    private Set<AccountRecurringTransaction> accountRecurringTransactions;
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)

@@ -13,6 +13,9 @@ public class AddSavingPlanRequest {
     @NotNull(message = "Account id is required")
     private Integer accountId;
 
+    @NotNull
+    @Positive
+    @DecimalMin(value = "0.01")
     private BigDecimal targetAmount;
 
     @NotNull

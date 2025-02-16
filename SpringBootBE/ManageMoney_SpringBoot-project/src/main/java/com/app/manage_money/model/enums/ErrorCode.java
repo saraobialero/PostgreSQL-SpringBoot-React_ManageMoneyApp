@@ -14,6 +14,8 @@ public enum ErrorCode {
     UA("Unauthorized", HttpStatus.UNAUTHORIZED, ExitCode.KO),
     ISE("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR, ExitCode.KO),
     BR("Bad request", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    ID("Invalid date", HttpStatus.BAD_REQUEST, ExitCode.KO),
+
 
     // Account errors
     ANF("Account not found", HttpStatus.NOT_FOUND, ExitCode.KO),
@@ -41,13 +43,17 @@ public enum ErrorCode {
     RTNF("Recurring transaction not found", HttpStatus.NOT_FOUND, ExitCode.KO),
     RTIA("Recurring transaction is inactive", HttpStatus.BAD_REQUEST, ExitCode.KO),
     RTIE("Recurring transaction is expired", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    RTNC("No recurring transaction inside the list", HttpStatus.NO_CONTENT, ExitCode.KO),
 
     // SavingPlan errors
     SPNF("Saving plan not found", HttpStatus.NOT_FOUND, ExitCode.KO),
     SPTA("Saving plan target already reached", HttpStatus.BAD_REQUEST, ExitCode.KO),
     SPIE("Saving plan is expired", HttpStatus.BAD_REQUEST, ExitCode.KO),
     NCSP("No Saving plan provided to add", HttpStatus.BAD_REQUEST, ExitCode.KO),
-    NSP("There aren't any saving plan inside the list", HttpStatus.NO_CONTENT, ExitCode.KO);
+    NSP("There aren't any saving plan inside the list", HttpStatus.NO_CONTENT, ExitCode.KO),
+    IT("Invalid target", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    IC("Invalid contribution", HttpStatus.BAD_REQUEST, ExitCode.KO),
+    IW("Withdrawal amount must be greater than zero", HttpStatus.BAD_REQUEST, ExitCode.KO);
 
     private String message;
     private HttpStatus status;

@@ -1,31 +1,27 @@
 package com.app.manage_money.service.functions;
 
-import com.app.manage_money.model.RecurringTransaction;
+
+import com.app.manage_money.model.dto.request.AddRecurringTransactionRequest;
+import com.app.manage_money.model.dto.request.UpdateRecurringTransactionRequest;
 import com.app.manage_money.model.dto.response.RecurringTransactionDTO;
-import com.app.manage_money.model.enums.Frequency;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface RecurringTransactionFunctions {
     // CREATE
-    //TODO change in Request
-    RecurringTransactionDTO addRecurringTransaction(RecurringTransaction transaction, Frequency frequency);
+    RecurringTransactionDTO addRecurringTransaction(AddRecurringTransactionRequest addRecurringTransactionRequest);
 
     // READ
     List<RecurringTransactionDTO> getDueTransactions();
     List<RecurringTransactionDTO> getUpcomingTransactions(LocalDate startDate, LocalDate endDate);
+    List<RecurringTransactionDTO> getAllRecurringTransactions();
     RecurringTransactionDTO getRecurringTransactionById(Integer id);
 
     // UPDATE
-    boolean updateNextOccurrence(Integer recurringTransactionId);
-    boolean updateRecurringTransaction(Integer id, RecurringTransaction updatedTransaction);
+    RecurringTransactionDTO updateRecurringTransaction(Integer id, UpdateRecurringTransactionRequest updateRecurringTransactionRequest);
     boolean toggleRecurringTransactionStatus(Integer id, boolean active);
 
-
-    // Process
-    void processRecurringTransactions();
-    List<RecurringTransactionDTO> getFailedRecurringTransactions();
 
     // DELETE
     boolean deleteRecurringTransaction(Integer id);

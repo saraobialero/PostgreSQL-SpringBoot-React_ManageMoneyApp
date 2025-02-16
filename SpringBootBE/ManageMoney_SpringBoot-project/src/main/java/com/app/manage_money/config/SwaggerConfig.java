@@ -18,8 +18,7 @@ public class SwaggerConfig {
                         .description("API for managing incomes and expenses")
                         .version("1.0")
                         .contact(new Contact()
-                                .name("Your Name")
-                                .email("your.email@example.com")))
+                                .name("Sara Obialero")))
                 .addServersItem(new Server()
                         .url("http://localhost:8080/api")
                         .description("Local Development Server"));

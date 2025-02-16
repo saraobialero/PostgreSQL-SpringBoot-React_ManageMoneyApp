@@ -25,11 +25,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 
@@ -130,26 +128,26 @@ public class TransactionService implements TransactionFunctions {
     public TransactionMonthlyAnalyticsDTO getMonthlyTransactionSummary(Integer accountId, LocalDate date) {
         Account account = getAccountById(accountId);
 
-        // Calcola date di inizio e fine mese
+
         YearMonth yearMonth = YearMonth.from(date);
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
 
-        // Ottieni tutte le transazioni del mese
+
         List<Transaction> monthlyTransactions = transactionRepository
                 .findByAccountIdAndTransactionDateBetween(accountId, startDate, endDate);
 
-        // Verifica se ci sono transazioni
+
         transactionListIsEmptyBy(monthlyTransactions,
                 String.format("month %s for account %d", yearMonth, accountId));
 
-        // Ottieni transazioni del mese precedente per confronto
+
         LocalDate previousMonthStart = startDate.minusMonths(1);
         LocalDate previousMonthEnd = endDate.minusMonths(1);
         List<Transaction> previousMonthTransactions = transactionRepository
                 .findByAccountIdAndTransactionDateBetween(accountId, previousMonthStart, previousMonthEnd);
 
-        // Usa il DTOConverter per costruire l'analytics DTO
+
         return DTOConverter.buildTransactionAnalyticsDTO(
                 monthlyTransactions,
                 previousMonthTransactions,

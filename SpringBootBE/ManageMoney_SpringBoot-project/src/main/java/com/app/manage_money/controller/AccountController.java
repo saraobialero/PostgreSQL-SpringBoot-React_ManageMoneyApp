@@ -134,13 +134,15 @@ public class AccountController {
 
 
     // DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponse<Boolean>> deleteAccount(@PathVariable Integer id) {
-        return new ResponseEntity<>(new SuccessResponse<>(accountService.deleteAccountById(id)), HttpStatus.OK);
+    @PatchMapping("/{id}/state")
+    public ResponseEntity<Boolean> updateAccountState(
+            @PathVariable Integer id,
+            @RequestParam State state) {
+        return ResponseEntity.ok(accountService.toggleAccountStatus(id, state));
     }
 
-    @DeleteMapping
-    public ResponseEntity<SuccessResponse<Boolean>> deleteAllAccounts() {
-        return new ResponseEntity<>(new SuccessResponse<>(accountService.deleteAll()), HttpStatus.OK);
+    @GetMapping("/{id}/active")
+    public ResponseEntity<Boolean> isAccountActive(@PathVariable Integer id) {
+        return ResponseEntity.ok(accountService.isAccountActive(id));
     }
 }

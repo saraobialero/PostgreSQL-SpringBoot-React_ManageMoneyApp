@@ -56,19 +56,19 @@ public class RecurringTransactionController {
     }
 
     @GetMapping("/due")
-    public ResponseEntity<SuccessResponse<List<RecurringTransactionDTO>>> getDueTransactions() {
+    public ResponseEntity<SuccessResponse<List<RecurringTransactionDTO>>> getDueTransactions(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return new ResponseEntity<>(
-                new SuccessResponse<>(recurringTransactionService.getDueTransactions()),
+                new SuccessResponse<>(recurringTransactionService.getDueTransactions(date)),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("/upcoming")
     public ResponseEntity<SuccessResponse<List<RecurringTransactionDTO>>> getUpcomingTransactions(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return new ResponseEntity<>(
-                new SuccessResponse<>(recurringTransactionService.getUpcomingTransactions(startDate, endDate)),
+                new SuccessResponse<>(recurringTransactionService.getUpcomingTransactions(date)),
                 HttpStatus.OK
         );
     }
@@ -94,13 +94,6 @@ public class RecurringTransactionController {
         );
     }
 
-    // DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponse<Boolean>> deleteRecurringTransaction(
-            @PathVariable Integer id) {
-        return new ResponseEntity<>(
-                new SuccessResponse<>(recurringTransactionService.deleteRecurringTransaction(id)),
-                HttpStatus.OK
-        );
-    }
+
+
 }

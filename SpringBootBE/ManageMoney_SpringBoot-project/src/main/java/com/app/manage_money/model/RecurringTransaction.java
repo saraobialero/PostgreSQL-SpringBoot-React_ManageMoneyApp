@@ -3,7 +3,7 @@ package com.app.manage_money.model;
 import com.app.manage_money.model.enums.Frequency;
 import com.app.manage_money.model.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -11,8 +11,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
-@Data
 @Entity
+@Getter
+@Setter
+@ToString(exclude = "accountRecurringTransactions")
+@EqualsAndHashCode(exclude = "accountRecurringTransactions")
 @Table(name = "recurring_transactions")
 public class RecurringTransaction {
     @Id
@@ -24,7 +27,7 @@ public class RecurringTransaction {
     @JoinColumn(name = "label_id")
     private Label label;
 
-    @OneToMany(mappedBy = "recurringTransaction")
+    @OneToMany(mappedBy = "recurringTransaction", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AccountRecurringTransaction> accountRecurringTransactions;
 
     @Enumerated(EnumType.STRING)

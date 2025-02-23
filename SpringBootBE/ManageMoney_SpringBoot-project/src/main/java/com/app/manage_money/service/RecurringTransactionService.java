@@ -15,6 +15,7 @@ import com.app.manage_money.model.dto.response.RecurringTransactionDTO;
 import com.app.manage_money.model.enums.ErrorCode;
 import com.app.manage_money.model.enums.LabelType;
 import com.app.manage_money.model.enums.TransactionRole;
+import com.app.manage_money.repository.AccountRecurringTransactionRepository;
 import com.app.manage_money.repository.AccountRepository;
 import com.app.manage_money.repository.LabelRepository;
 import com.app.manage_money.repository.RecurringTransactionRepository;
@@ -39,6 +40,8 @@ public class RecurringTransactionService implements RecurringTransactionFunction
     private final RecurringTransactionRepository recurringTransactionRepository;
     private final LabelRepository labelRepository;
     private final AccountRepository accountRepository;
+    private final AccountRecurringTransactionRepository accountRecurringTransactionRepository;
+
 
 
     @Override
@@ -48,32 +51,39 @@ public class RecurringTransactionService implements RecurringTransactionFunction
 
         Set<AccountRecurringTransaction> accountRecurringTransactions = new HashSet<>();
 
+        // Configura l'account sorgente
         AccountRecurringTransaction sourceAccount = new AccountRecurringTransaction();
         sourceAccount.setAccount(accountRepository.getReferenceById(request.getSourceAccountId()));
         sourceAccount.setRecurringTransaction(recurringTransaction);
         sourceAccount.setTransactionRole(TransactionRole.SOURCE);
         accountRecurringTransactions.add(sourceAccount);
 
+        // Configura l'account destinazione (se presente nella request)
+        if (request.getDestinationAccountId() != null) {
+            AccountRecurringTransaction destinationAccount = new AccountRecurringTransaction();
+            destinationAccount.setAccount(accountRepository.getReferenceById(request.getDestinationAccountId()));
+            destinationAccount.setRecurringTransaction(recurringTransaction);
+            destinationAccount.setTransactionRole(TransactionRole.DESTINATION);
+            accountRecurringTransactions.add(destinationAccount);
+        }
 
         recurringTransaction.setAccountRecurringTransactions(accountRecurringTransactions);
-        RecurringTransaction savedTransaction = recurringTransactionRepository.save(recurringTransaction);
-
-        return convertToRecurringTransactionDTO(savedTransaction);
+        return convertToRecurringTransactionDTO(recurringTransactionRepository.save(recurringTransaction));
     }
 
 
     @Override
-    public List<RecurringTransactionDTO> getDueTransactions() {
+    public List<RecurringTransactionDTO> getDueTransactions(LocalDate date) {
         List<RecurringTransaction> recurringTransactions =
-             recurringTransactionRepository.findByIsActiveTrueAndNextOccurrenceLessThanCurrentDate();
+             recurringTransactionRepository.findByIsActiveTrueAndNextOccurrenceGreaterThan(date);
         recurringTransactionListIsEmpty(recurringTransactions);
         return convertCollection(recurringTransactions, DTOConverter::convertToRecurringTransactionDTO, ArrayList::new);
     }
 
     @Override
-    public List<RecurringTransactionDTO> getUpcomingTransactions(LocalDate startDate, LocalDate endDate) {
+    public List<RecurringTransactionDTO> getUpcomingTransactions(LocalDate date) {
         List<RecurringTransaction> recurringTransactions =
-                recurringTransactionRepository.findByIsActiveTrueAndNextOccurrenceGreaterThanCurrentDate();
+                recurringTransactionRepository.findByIsActiveTrueAndNextOccurrenceBefore(date);
         recurringTransactionListIsEmpty(recurringTransactions);
         return convertCollection(recurringTransactions, DTOConverter::convertToRecurringTransactionDTO, ArrayList::new);
 
@@ -107,13 +117,6 @@ public class RecurringTransactionService implements RecurringTransactionFunction
         recurringTransaction.setActive(!recurringTransaction.isActive());
         recurringTransactionRepository.save(recurringTransaction);
         return recurringTransaction.isActive();
-    }
-
-    @Override
-    public boolean deleteRecurringTransaction(Integer id) {
-        RecurringTransaction recurringTransaction = recurringTransactionExists(id);
-        recurringTransactionRepository.delete(recurringTransaction);
-        return true;
     }
 
     // CUSTOM METHODS

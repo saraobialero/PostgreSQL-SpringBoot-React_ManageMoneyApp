@@ -38,8 +38,9 @@ public interface AccountFunctions {
     Set<AccountDTO> transferMoney(Integer sourceAccountId, Integer destinationAccountId, TransferMoneyRequest request);
 
     //DELETE
-    boolean deleteAccountById (Integer accountId);
-    boolean deleteAll();
+    boolean toggleAccountStatus(Integer id, State state);
+    boolean isAccountActive(Integer id);
+
 
 
 

@@ -176,28 +176,32 @@ public class AccountService implements AccountFunctions {
   return convertCollection(accounts, DTOConverter::convertToAccountDTO, HashSet::new);
  }
 
- @Transactional
- @Override
- public boolean deleteAccountById(Integer accountId) {
-  Account account = accountExists(accountId);
-  transactionRepository.deleteAllByAccount(account);
-  savingPlanRepository.deleteAllByAccount(account);
-  accountRecurringTransactionRepository.deleteAllByAccount(account);
-  accountRepository.delete(account);
+
+
+ public boolean toggleAccountStatus(Integer id, State state) {
+  Account account = accountRepository.findById(id)
+          .orElseThrow(() -> new AccountException(
+                  new ErrorResponse(
+                          ErrorCode.ANF,
+                          "Account with id " + id + " not found"
+                  )));
+
+  account.setState(state);
+  accountRepository.save(account);
   return true;
  }
 
- @Transactional
- @Override
- public boolean deleteAll() {
-  Set<Account> accounts = accountListExists();
-  accountListIsEmpty(accounts);
-  transactionRepository.deleteAll();
-  savingPlanRepository.deleteAll();
-  accountRecurringTransactionRepository.deleteAll();
-  accountRepository.deleteAll();
-  return true;
+ public boolean isAccountActive(Integer id) {
+  Account account = accountRepository.findById(id)
+          .orElseThrow(() -> new AccountException(
+                  new ErrorResponse(
+                          ErrorCode.ANF,
+                          "Account with id " + id + " not found"
+                  )));
+
+  return account.getState() == State.ACTIVE;
  }
+
 
 
  // CUSTOM METHODS
@@ -345,4 +349,5 @@ public class AccountService implements AccountFunctions {
    );
   }
  }
+
 }

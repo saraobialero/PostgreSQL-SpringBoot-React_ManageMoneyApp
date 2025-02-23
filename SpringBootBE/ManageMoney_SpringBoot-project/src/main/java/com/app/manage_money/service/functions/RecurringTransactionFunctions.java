@@ -13,8 +13,8 @@ public interface RecurringTransactionFunctions {
     RecurringTransactionDTO addRecurringTransaction(AddRecurringTransactionRequest addRecurringTransactionRequest);
 
     // READ
-    List<RecurringTransactionDTO> getDueTransactions();
-    List<RecurringTransactionDTO> getUpcomingTransactions(LocalDate startDate, LocalDate endDate);
+    List<RecurringTransactionDTO> getDueTransactions(LocalDate date);
+    List<RecurringTransactionDTO> getUpcomingTransactions(LocalDate date);
     List<RecurringTransactionDTO> getAllRecurringTransactions();
     RecurringTransactionDTO getRecurringTransactionById(Integer id);
 
@@ -22,8 +22,5 @@ public interface RecurringTransactionFunctions {
     RecurringTransactionDTO updateRecurringTransaction(Integer id, UpdateRecurringTransactionRequest updateRecurringTransactionRequest);
     boolean toggleRecurringTransactionStatus(Integer id, boolean active);
 
-
-    // DELETE
-    boolean deleteRecurringTransaction(Integer id);
 
 }

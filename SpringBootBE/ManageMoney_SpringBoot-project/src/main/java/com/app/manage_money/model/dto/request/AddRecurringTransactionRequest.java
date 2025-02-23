@@ -47,4 +47,6 @@ public class AddRecurringTransactionRequest {
 
     @NotNull
     private boolean isActive;
+
+    private Integer destinationAccountId;
 }

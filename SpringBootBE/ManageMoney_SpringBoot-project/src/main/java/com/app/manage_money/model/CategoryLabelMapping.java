@@ -8,7 +8,7 @@ import lombok.Data;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-//Keep?
+
 @Data
 @Entity
 @Table(name = "category_label_mappings")

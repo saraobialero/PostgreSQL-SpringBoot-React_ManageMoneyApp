@@ -2,12 +2,15 @@ package com.app.manage_money.model;
 
 import com.app.manage_money.model.enums.TransactionRole;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-@Data
 @Entity
+@Getter
+@Setter
+@ToString(exclude = {"account", "recurringTransaction"})
+@EqualsAndHashCode(exclude = {"account", "recurringTransaction"})
 @Table(name = "account_recurring_transactions")
 public class AccountRecurringTransaction {
     @Id
